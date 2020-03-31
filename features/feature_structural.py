@@ -17,22 +17,22 @@ def calculate_commented_by_starter(dialog_data):
 # Fetch the normalized utterance positions and if the utterance is commented by the starter 
 def fetch_custom_feature_data(json_data):
 	normalized_utterance_positions = []
-	started_by_starters = []
+	commented_by_starters = []
 	for dialog_id, dialog_dict in json_data.items():
 		dialog_data = dialog_dict['utterances']
 		normalized = [item['utterance_pos']/len(dialog_data) for item in dialog_data]
 		normalized_utterance_positions = appendAll(normalized_utterance_positions, normalized)
 		
 		started_by_starter = calculate_commented_by_starter(dialog_data)
-		started_by_starters = appendAll(started_by_starters, started_by_starter)
+		commented_by_starters = appendAll(commented_by_starters, started_by_starter)
 
-	return normalized_utterance_positions, started_by_starters
+	return normalized_utterance_positions, commented_by_starters
 
 # Fetch several lengths of the utterances
 def fetch_utterance_lengths(utterances):
-	utterances_default = []
-	utterances_unique = []
-	utterances_unique_stemmed = []
+	utterance_lengths = []
+	unique_utterance_lengths = []
+	unique_stemmed_utterance_lengths = []
 
 	# without stopwords!
 	for index, utterance in enumerate(utterances):
@@ -40,24 +40,24 @@ def fetch_utterance_lengths(utterances):
 			print(f'Utterance lengths calculation progress: {index}/{len(utterances)}')
 		text_tokens = word_tokenize(utterance)
 		tokens_default = [word for word in text_tokens if not word in nltk_stopwords]
-		utterances_default.append(len(tokens_default))
+		utterance_lengths.append(len(tokens_default))
 
 		tokens_unique = list(set(tokens_default))
-		utterances_unique.append(len(tokens_unique))
+		unique_utterance_lengths.append(len(tokens_unique))
 
 		tokens_unique_stemmed = [stemmer.stem(token) for token in tokens_unique]
-		utterances_unique_stemmed.append(len(tokens_unique_stemmed))
+		unique_stemmed_utterance_lengths.append(len(tokens_unique_stemmed))
 
-	return utterances_default, utterances_unique, utterances_unique_stemmed
+	return utterance_lengths, unique_utterance_lengths, unique_stemmed_utterance_lengths
 
 # Calculate all features and return them
 def calculate_structural_features(json_data):
 	print("[!!] Run download_stopwords.py ONCE to download the required NLTK stopwords!")
 
 	all_utterances, _, _, utterance_positions = parse_data(json_data)
-	normalized_utterance_positions, commented_by_starter = fetch_custom_feature_data(json_data)
+	normalized_utterance_positions, commented_by_starters = fetch_custom_feature_data(json_data)
 	utterance_lengths, unique_utterance_lengths, unique_stemmed_utterance_lengths = fetch_utterance_lengths(all_utterances)
-	return utterance_positions, normalized_utterance_positions, utterance_lengths, unique_utterance_lengths, unique_stemmed_utterance_lengths, commented_by_starter
+	return utterance_positions, normalized_utterance_positions, utterance_lengths, unique_utterance_lengths, unique_stemmed_utterance_lengths, commented_by_starters
 
 # Calculate all features and store it in a pickle file
 def calculate_and_store_as_pickle(json_data, filename=CACHED_DATA_FILENAME):
