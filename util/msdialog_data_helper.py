@@ -39,6 +39,6 @@ def print_data_analytics(all_utterances, all_isUsers, all_tags):
 
     print(f'Total rows: {len(all_utterances)}')
     print(f'User: {user_dialog_count}, Agent: {len(all_utterances) - user_dialog_count}')
+    print(f'Top {print_number_top_tags} tags with highest frequency:')    
     for i in range(0, print_number_top_tags):
-        print(f' > {tags[i]}: {counts[i]}')
-    print(f' {print_number_top_tags} tags with highest frequency printed')
+        print(f' {i + 1}. {tags[i]}: {counts[i]}')
