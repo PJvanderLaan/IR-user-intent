@@ -13,6 +13,7 @@ def feature_analysis(json_data):
     print_data_analytics(all_utterances, all_isUsers, all_tags)
     
     structural_features = calculate_structural_features(utterance_positions)
+    seniment_features = calculate_sentimental_features()
 
 if __name__ == "__main__":
     json_data = load_data()
