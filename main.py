@@ -21,6 +21,7 @@ def feature_analysis(json_data):
 
     print(sentiment_features)
 
+
 if __name__ == "__main__":
     json_data = load_data()
 

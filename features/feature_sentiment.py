@@ -1,5 +1,9 @@
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+# Paths to lexicons
+POSITIVE_LEXICON_PATH = './data/lexicon/positive-words.txt'  # http://ptrckprry.com/course/ssd/data/positive-words.txt
+NEGATIVE_LEXICON_PATH = './data/lexicon/negative-words.txt'  # http://ptrckprry.com/course/ssd/data/negative-words.txt
+
 
 # This method creates the sentiment features on the utterances. The order of the arrays is:
 # negative, neutral, positive, exclamation, thank, feedback, lexicon
@@ -9,7 +13,9 @@ def calculate_sentimental_features(json_data, exclamation_binary=True, opinion_n
     exclamation = get_exclamationmark_features(utterances, exclamation_binary)
     thank = get_thank_feature(utterances)
     feedback = get_feedback(utterances)
-    poa_score, neg_score = get_opinion_lexicon(utterances, ["good"], ["bad"], opinion_normalized)
+    positive_lexicon = get_lexicon(POSITIVE_LEXICON_PATH)
+    negative_lexicon = get_lexicon(NEGATIVE_LEXICON_PATH)
+    poa_score, neg_score = get_opinion_lexicon(utterances, positive_lexicon, negative_lexicon, opinion_normalized)
     return negative, neutral, positive, exclamation, thank, feedback, poa_score, neg_score
 
 
@@ -44,7 +50,8 @@ def get_exclamationmark_features(text, binary=True):
 def get_thank_feature(text):
     thank = []
     for utterance in text:
-        thank.append(1 if utterance.find("thank") != -1 else 0)
+        lower = utterance.lower()
+        thank.append(1 if lower.find("thank") != -1 else 0)
     return thank
 
 
@@ -52,7 +59,8 @@ def get_thank_feature(text):
 def get_feedback(text):
     feedback = []
     for utterance in text:
-        feedback.append(1 if (utterance.find("does not") != -1) or (utterance.find("did not") != -1) else 0)
+        lower = utterance.lower()
+        feedback.append(1 if (lower.find("does not") != -1) or (lower.find("did not") != -1) else 0)
     return feedback
 
 
@@ -64,8 +72,12 @@ def get_opinion_lexicon(text, pos_lexicon, neg_lexicon, normalized=False):
     # For each utterance
     num_utterances = len(text)
     for i in range(0, num_utterances):
+        print("{}/{}".format(i, num_utterances))
+
+        # Lowercase
+        lower = text[i].lower()
         # Tokenize utterance to list of words
-        split = text[i].split()
+        split = lower.split()
         # Set initial count to 0
         positive_count.append(0)
         negative_count.append(0)
@@ -80,3 +92,10 @@ def get_opinion_lexicon(text, pos_lexicon, neg_lexicon, normalized=False):
             negative_count[i] /= len(split)
 
     return positive_count, negative_count
+
+
+# This method gets a newline separated lexicon from the given path
+def get_lexicon(path):
+    with open(path, "r") as f:
+        lines = f.read().splitlines()
+        return lines
