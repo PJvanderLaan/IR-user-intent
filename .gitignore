@@ -1,3 +1,4 @@
 # Ignore jetbrains IDE's
 .idea
 venv/
+MSDialog/
