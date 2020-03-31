@@ -9,11 +9,12 @@ def load_data(data_path=DATA_PATH):
         return json.load(json_file)
 
 def feature_analysis(json_data):
-    structural_features = calculate_structural_features(json_data)
+    all_utterances, all_isUsers, all_tags, utterance_positions = parse_data(json_data)
+    print_data_analytics(all_utterances, all_isUsers, all_tags)
+    
+    structural_features = calculate_structural_features(utterance_positions)
 
 if __name__ == "__main__":
     json_data = load_data()
-    all_utterances, all_isUsers, all_tags = parse_data(json_data)
 
-    print_data_analytics(all_utterances, all_isUsers, all_tags)
     feature_analysis(json_data)

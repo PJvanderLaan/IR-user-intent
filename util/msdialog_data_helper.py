@@ -10,14 +10,15 @@ def checkIfUser(title):
 	return title.lower() == "user"
 
 def parse_data(json_data):
-	all_utterances, all_isUsers, all_tags = [], [], []
+	all_utterances, all_isUsers, all_tags, all_utterance_positions = [], [], [], []
 	for dialog_id, dialog_dict in json_data.items():
-		utterances, isUser, tags = parse_dialog(dialog_dict)
+		utterances, isUser, tags, utterance_positions = parse_dialog(dialog_dict)
 
 		all_utterances = appendAll(all_utterances, utterances)
 		isUser = appendAll(all_isUsers, isUser)
 		all_tags = appendAll(all_tags, tags)
-	return all_utterances, all_isUsers, all_tags
+		all_utterance_positions = appendAll(all_utterance_positions, utterance_positions)
+	return all_utterances, all_isUsers, all_tags, all_utterance_positions
 				
 def parse_dialog(dialog_dict):
 	title = dialog_dict["title"]
@@ -27,8 +28,9 @@ def parse_dialog(dialog_dict):
 	utterances = [item["utterance"] for item in dialog_data]
 	isUser = [checkIfUser(item["actor_type"]) for item in dialog_data]
 	tags = [item["tags"].split(" ") for item in dialog_data]
+	utterance_positions = [item["utterance_pos"] for item in dialog_data]
 
-	return utterances, isUser, tags
+	return utterances, isUser, tags, utterance_positions
 
 def print_data_analytics(all_utterances, all_isUsers, all_tags):
     user_dialog_count = len(list(filter(lambda x: x == True, all_isUsers)))
