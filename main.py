@@ -29,8 +29,9 @@ def feature_analysis(json_data):
     utterance_positions, normalized_utterance_positions, utterance_lengths, unique_utterance_lengths, unique_stemmed_utterance_lengths, commented_by_starter \
         = fetch_structural_features_pickle()
 
+    data = parse_data(json_data)
     negative, neutral, positive, exclamation, thank, feedback, pos_score, neg_score = calculate_sentimental_features(
-        json_data)
+        data)
 
     # Combine the content, structural and sentiment features to a CSR matrix
     combined_features = combine_features([
