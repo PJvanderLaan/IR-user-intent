@@ -1,14 +1,19 @@
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 # Paths to lexicons
+from util.pickle_helper import store_data_as_pickle, get_pickled_data
+
 POSITIVE_LEXICON_PATH = './data/lexicon/positive-words.txt'  # http://ptrckprry.com/course/ssd/data/positive-words.txt
 NEGATIVE_LEXICON_PATH = './data/lexicon/negative-words.txt'  # http://ptrckprry.com/course/ssd/data/negative-words.txt
+
+# Path to sentiment feature pickle
+CACHED_DATA_FILENAME_SENTIMENT = 'sentiment_pickle_data'
 
 
 # This method creates the sentiment features on the utterances. The order of the arrays is:
 # negative, neutral, positive, exclamation, thank, feedback, lexicon
-def calculate_sentimental_features(json_data, exclamation_binary=True, opinion_normalized=False):
-    utterances = json_data[0]
+def calculate_sentimental_features(parsed_data, exclamation_binary=True, opinion_normalized=False):
+    utterances = parsed_data[0]
     negative, neutral, positive = get_vader_features(utterances)
     exclamation = get_exclamationmark_features(utterances, exclamation_binary)
     thank = get_thank_feature(utterances)
@@ -99,3 +104,13 @@ def get_lexicon(path):
     with open(path, "r") as f:
         lines = f.read().splitlines()
         return lines
+
+
+# Calculate all sentiment features and store it in a pickle file
+def calculate_and_store_sentiment_as_pickle(parsed_data, filename=CACHED_DATA_FILENAME_SENTIMENT):
+    store_data_as_pickle(calculate_sentimental_features(parsed_data), filename)
+
+
+# Fetch the pickle file of the sentiment features
+def fetch_sentiment_features_pickle(filename=CACHED_DATA_FILENAME_SENTIMENT):
+    return get_pickled_data(filename)
