@@ -15,8 +15,8 @@ def calculate_sentimental_features(json_data, exclamation_binary=True, opinion_n
     feedback = get_feedback(utterances)
     positive_lexicon = get_lexicon(POSITIVE_LEXICON_PATH)
     negative_lexicon = get_lexicon(NEGATIVE_LEXICON_PATH)
-    poa_score, neg_score = get_opinion_lexicon(utterances, positive_lexicon, negative_lexicon, opinion_normalized)
-    return negative, neutral, positive, exclamation, thank, feedback, poa_score, neg_score
+    pos_score, neg_score = get_opinion_lexicon(utterances, positive_lexicon, negative_lexicon, opinion_normalized)
+    return negative, neutral, positive, exclamation, thank, feedback, pos_score, neg_score
 
 
 # Get the VADER features from the utterances, returns negative, neutral, and positive feature arrays in that order
