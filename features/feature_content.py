@@ -1,9 +1,6 @@
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
-
-from util.msdialog_data_helper import parse_data, print_data_analytics, appendAll
+from util.msdialog_data_helper import parse_data
 from util.pickle_helper import get_pickled_data, store_data_as_pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
-import pandas as pd
 
 # Path to content feature pickle
 CACHED_DATA_FILENAME = 'content_pickle_data'
