@@ -17,7 +17,7 @@ def get_utterance_similarity(json_data):
         utterances = [item["utterance"] for item in dialog_data]
         tfidf = compute_cosine_similarity(utterances)
         # Get the cosine similarity score between each utterance and the first utterance of the dialog.
-        for i in range(1, tfidf.shape[0]):
+        for i in range(0, tfidf.shape[0]):
             results.append(tfidf[0, i])
 
     return results
@@ -39,6 +39,7 @@ def get_dialog_similarity(json_data):
                     sum += tfidf[i, j]
 
             results.append(sum / (tfidf.shape[0] - 1))
+
     return results
 
 

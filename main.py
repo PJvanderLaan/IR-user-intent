@@ -26,7 +26,7 @@ def combine_features(array_features):
 
 
 def feature_analysis(json_data):
-    utterance_similarity, dialog_similarity, question_mark, duplicate, utterance_keywords = fetch_content_features_pickle()
+    utterance_similarity, dialog_similarity, question_mark, duplicate, keywords = fetch_content_features_pickle()
 
     # Fetch the structural features.
     # Call calculate_and_store_as_pickle(json_data) to recalculate
@@ -41,7 +41,11 @@ def feature_analysis(json_data):
     # Combine the content, structural and sentiment features to a CSR matrix
     combined_features = combine_features([
         # content features
-        # ...
+        utterance_similarity,
+        dialog_similarity,
+        question_mark,
+        duplicate,
+        # keywords,
         # structural features
         utterance_positions,
         normalized_utterance_positions,
@@ -63,5 +67,4 @@ def feature_analysis(json_data):
 
 if __name__ == "__main__":
     json_data = load_data()
-    calculate_and_store_content_as_pickle(json_data)
     feature_analysis(json_data)
