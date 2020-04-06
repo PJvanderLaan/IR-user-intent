@@ -18,7 +18,7 @@ def fetch_labels(json_data, mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA', '
 		for item in dialog_dict['utterances']:
 			labels = item["tags"].split(" ")
 			labels = list(filter(lambda x: x in mapping, labels))
-			one_hot_encoding = [int(x in labels) for x in mapping]
+			one_hot_encoding = [x in labels for x in mapping]
 			all_labels.append(one_hot_encoding)
 	return all_labels
 
