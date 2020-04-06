@@ -5,8 +5,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 # Path to content feature pickle
 CACHED_DATA_FILENAME = 'content_pickle_data'
 
-KEYWORDS = ["what", "where", "when", "why", "who", "how"]
-
 
 # Calculates utterance similarity score between itself and the first utterance of the dialog.
 def get_utterance_similarity(json_data):
@@ -69,7 +67,7 @@ def get_duplicate(json_data):
     results = []
 
     for utterance in all_utterances:
-        if "similar" in utterance.lower() or "same" in utterance.lower():
+        if "same" in utterance.lower() or "similar" in utterance.lower():
             results.append(1)
         else:
             results.append(0)
@@ -78,18 +76,15 @@ def get_duplicate(json_data):
 
 
 # Check for the 5W1H keywords in the utterances.
-def get_keywords(json_data):
+def get_keyword_feature(json_data, keyword):
     all_utterances, _, _, _ = parse_data(json_data)
     results = []
 
     for utterance in all_utterances:
-        keywords = [0] * 6
-
-        for index, keyword in enumerate(KEYWORDS):
-            if keyword in utterance.lower():
-                keywords[index] = 1
-
-        results.append(keywords)
+        if keyword in utterance.lower():
+            results.append(1)
+        else:
+            results.append(0)
 
     return results
 
@@ -100,9 +95,15 @@ def calculate_content_features(json_data):
     dialog_similarity = get_dialog_similarity(json_data)
     question_mark = get_question_mark(json_data)
     duplicate = get_duplicate(json_data)
-    keywords = get_keywords(json_data)
+    keyword_what = get_keyword_feature(json_data, "what")
+    keyword_where = get_keyword_feature(json_data, "where")
+    keywords_when = get_keyword_feature(json_data, "when")
+    keywords_why = get_keyword_feature(json_data, "why")
+    keywords_who = get_keyword_feature(json_data, "who")
+    keywords_how = get_keyword_feature(json_data, "how")
 
-    return utterance_similarity, dialog_similarity, question_mark, duplicate, keywords
+    return utterance_similarity, dialog_similarity, question_mark, duplicate, keyword_what, keyword_where, \
+           keywords_when, keywords_why, keywords_who, keywords_how
 
 
 # Calculate all features and store it in a pickle file

@@ -37,7 +37,8 @@ def load_data(data_path=DATA_PATH):
         return json.load(json_file)
 
 def construct_data(json_data):
-    utterance_similarity, dialog_similarity, question_mark, duplicate, keywords = fetch_content_features_pickle()
+    utterance_similarity, dialog_similarity, question_mark, duplicate, keyword_what, keyword_where, \
+    keywords_when, keywords_why, keywords_who, keywords_how = fetch_content_features_pickle()
 
     # Call calculate_and_store_as_pickle(json_data) to recalculate
     utterance_positions, normalized_utterance_positions, utterance_lengths, unique_utterance_lengths, unique_stemmed_utterance_lengths, commented_by_starter \
@@ -53,7 +54,12 @@ def construct_data(json_data):
         dialog_similarity,
         question_mark,
         duplicate,
-        # keywords,
+        keyword_what,
+        keyword_where,
+        keywords_when,
+        keywords_why,
+        keywords_who,
+        keywords_how,
         # structural features
         utterance_positions,
         normalized_utterance_positions,
