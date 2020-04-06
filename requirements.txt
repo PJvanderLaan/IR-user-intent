@@ -1,3 +1,4 @@
 vaderSentiment==3.3.1
 scipy==1.4.1
+scikit-learn==0.22.1
 nltk==3.4.5
