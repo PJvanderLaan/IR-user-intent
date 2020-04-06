@@ -11,6 +11,15 @@ def appendAll(array, items):
 def checkIfUser(title):
 	return title.lower() == "user"
 
+def fetch_labels(json_data):
+	all_labels = []
+	for dialog_id, dialog_dict in json_data.items():
+		dialog_data = dialog_dict['utterances']
+		labels = [item["tags"] for item in dialog_data]
+		all_labels = appendAll(all_labels, labels)
+
+	return all_labels
+
 # Parse the json data
 def parse_data(json_data):
 	all_utterances, all_isUsers, all_tags, all_utterance_positions = [], [], [], []

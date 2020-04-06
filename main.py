@@ -5,8 +5,9 @@ import numpy as np
 from features.feature_content import fetch_content_features_pickle, calculate_and_store_content_as_pickle
 from features.feature_sentiment import calculate_sentimental_features, calculate_and_store_sentiment_as_pickle, \
     fetch_sentiment_features_pickle
-from util.msdialog_data_helper import parse_data, print_data_analytics
+from util.msdialog_data_helper import parse_data, print_data_analytics, fetch_labels
 from features.feature_structural import calculate_and_store_as_pickle, fetch_structural_features_pickle
+from classifier_chaining import chaining_svm
 
 DATA_PATH = './data/MSDialog/MSDialog-Intent.json'
 
@@ -25,7 +26,7 @@ def combine_features(array_features):
     return sparse.hstack((csr_features))
 
 
-def feature_analysis(json_data):
+def construct_data(json_data):
     utterance_similarity, dialog_similarity, question_mark, duplicate, keywords = fetch_content_features_pickle()
 
     # Call calculate_and_store_as_pickle(json_data) to recalculate
@@ -36,7 +37,7 @@ def feature_analysis(json_data):
     negative, neutral, positive, exclamation, thank, feedback, pos_score, neg_score = fetch_sentiment_features_pickle()
 
     # Combine the content, structural and sentiment features to a CSR matrix
-    combined_features = combine_features([
+    X_train = combine_features([
         # content features
         utterance_similarity,
         dialog_similarity,
@@ -61,7 +62,10 @@ def feature_analysis(json_data):
         neg_score
     ])
 
+    Y_train = feature_to_csr(fetch_labels(json_data))
+    return X_train, Y_train
+
 
 if __name__ == "__main__":
     json_data = load_data()
-    feature_analysis(json_data)
+    X_train, Y_train = feature_analysis(json_data)
