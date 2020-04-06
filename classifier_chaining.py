@@ -4,92 +4,34 @@ from sklearn.datasets import fetch_openml
 from sklearn.multioutput import ClassifierChain
 from sklearn.model_selection import train_test_split
 from sklearn.multiclass import OneVsRestClassifier
-from sklearn.metrics import jaccard_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
+from util.pickle_helper import get_pickled_data, store_data_as_pickle
+from sklearn.model_selection import cross_val_score
 
-import ssl
-try:
-    _create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-    pass
-else:
-    ssl._create_default_https_context = _create_unverified_https_context
+CACHED_DATA_FILENAME = 'fitted_chain'
 
-# def chaining_svm(X_train, Y_train, C=0.5, gamma='scale', max_iter=-1, folds=10):
-# 	print(X_train.shape)
-# 	print(Y_train.shape)
+def chaining_svm(X, Y, C=0.5, gamma='scale', max_iter=-1, folds=10):
+	X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=.2, random_state=0)
+	# base_clf = SVC(C=C, kernel='rbf', gamma=gamma, max_iter=max_iter)
+	base_clf = SVC()
+	
+	chain = get_pickled_data(f'testchainpickle')
+	# chain = ClassifierChain(base_clf, cv=folds, order='random', random_state=0)
+	chain.fit(X_train, Y_train)
+	y_pred = chain.predict(X_test)
+	print(f'accuracy: {accuracy_score(Y_test, y_pred)}')
+	print(f'f1 score: {f1_score(Y_test, y_pred, average="macro")}')
+	print(f'precision: {precision_score(Y_test, y_pred, average="macro")}')
+	print(f'recall_score: {recall_score(Y_test, y_pred, average="macro")}')
+	store_data_as_pickle(chain, f'testchainpickle')
 
-# 	base_clf = SVC(C=C, kernel='rbf', gamma=gamma, max_iter=max_iter)
 
-# 	chains = [ClassifierChain(base_clf, cv=folds, order='random', random_state=i) for i in range(10)]
-# 	for chain in chains:
-# 		chain.fit(X_train, Y_train)
-
-def chaining_svm(X_train, Y_train, C=0.5, gamma='scale', max_iter=-1, folds=10):
-	X, Y = fetch_openml('yeast', version=4, return_X_y=True)
-	Y = Y == 'TRUE'
-	X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=.2,
-	                                                    random_state=0)
-
-	print(X)
-	print(Y)
-	print(X.shape)
-	print(Y.shape)
-
-	# # Fit an independent logistic regression model for each class using the
-	# # OneVsRestClassifier wrapper.
-	# base_lr = LogisticRegression()
-	# ovr = OneVsRestClassifier(base_lr)
-	# ovr.fit(X_train, Y_train)
-	# Y_pred_ovr = ovr.predict(X_test)
-	# ovr_jaccard_score = jaccard_score(Y_test, Y_pred_ovr, average='samples')
-
-	# # Fit an ensemble of logistic regression classifier chains and take the
-	# # take the average prediction of all the chains.
-	# chains = [ClassifierChain(base_lr, order='random', random_state=i) for i in range(10)]
-	# for chain in chains:
+	# chains = [ClassifierChain(base_clf, cv=folds, order='random', random_state=i) for i in range(10)]
+	# for index, chain in enumerate(chains):
+	# 	print(f'Fitting chain {index} ...')
 	# 	chain.fit(X_train, Y_train)
-
-	# Y_pred_chains = np.array([chain.predict(X_test) for chain in chains])
-	# chain_jaccard_scores = [jaccard_score(Y_test, Y_pred_chain >= .5, average='samples') for Y_pred_chain in Y_pred_chains]
-
-	# Y_pred_ensemble = Y_pred_chains.mean(axis=0)
-	# ensemble_jaccard_score = jaccard_score(Y_test, Y_pred_ensemble >= .5, average='samples')
-
-	# model_scores = [ovr_jaccard_score] + chain_jaccard_scores
-	# model_scores.append(ensemble_jaccard_score)
-
-	# model_names = ('Independent',
-	#                'Chain 1',
-	#                'Chain 2',
-	#                'Chain 3',
-	#                'Chain 4',
-	#                'Chain 5',
-	#                'Chain 6',
-	#                'Chain 7',
-	#                'Chain 8',
-	#                'Chain 9',
-	#                'Chain 10',
-	#                'Ensemble')
-
-	# x_pos = np.arange(len(model_names))
-
-	# # Plot the Jaccard similarity scores for the independent model, each of the
-	# # chains, and the ensemble (note that the vertical axis on this plot does
-	# # not begin at 0).
-
-	# fig, ax = plt.subplots(figsize=(7, 4))
-	# ax.grid(True)
-	# ax.set_title('Classifier Chain Ensemble Performance Comparison')
-	# ax.set_xticks(x_pos)
-	# ax.set_xticklabels(model_names, rotation='vertical')
-	# ax.set_ylabel('Jaccard Similarity Score')
-	# ax.set_ylim([min(model_scores) * .9, max(model_scores) * 1.1])
-	# colors = ['r'] + ['b'] * len(chain_jaccard_scores) + ['g']
-	# ax.bar(x_pos, model_scores, alpha=0.5, color=colors)
-	# plt.tight_layout()
-	# plt.show()
-
-if __name__ == "__main__":
-	print("classifier chaining")
+	# 	print(f'Done fitting, storing as {CACHED_DATA_FILENAME}-{index}.pickle ...')
+	# 	store_data_as_pickle(chains, f'{CACHED_DATA_FILENAME}-{index}')
+	
