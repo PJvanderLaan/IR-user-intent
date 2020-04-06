@@ -7,7 +7,6 @@ from features.feature_sentiment import calculate_sentimental_features, calculate
     fetch_sentiment_features_pickle
 from util.msdialog_data_helper import parse_data, print_data_analytics, fetch_labels
 from features.feature_structural import calculate_and_store_as_pickle, fetch_structural_features_pickle
-from classifier_chaining import chaining_svm
 
 DATA_PATH = './data/MSDialog/MSDialog-Intent.json'
 
