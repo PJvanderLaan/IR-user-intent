@@ -61,10 +61,10 @@ def construct_data(json_data):
         neg_score
     ])
 
-    Y_train = feature_to_csr(fetch_labels(json_data))
+    Y_train = sparse.csr_matrix(np.array(fetch_labels(json_data)).T)
     return X_train, Y_train
 
 
 if __name__ == "__main__":
     json_data = load_data()
-    X_train, Y_train = feature_analysis(json_data)
+    X_train, Y_train = construct_data(json_data)

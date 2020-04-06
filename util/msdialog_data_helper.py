@@ -11,13 +11,15 @@ def appendAll(array, items):
 def checkIfUser(title):
 	return title.lower() == "user"
 
-def fetch_labels(json_data):
+# Fetch the labels as an array of one hot coding rows.
+def fetch_labels(json_data, mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA', 'PF', 'NF', 'GG', 'JK', 'O']):
 	all_labels = []
-	for dialog_id, dialog_dict in json_data.items():
-		dialog_data = dialog_dict['utterances']
-		labels = [item["tags"] for item in dialog_data]
-		all_labels = appendAll(all_labels, labels)
-
+	for dialog_id, dialog_dict in json_data.items(): 
+		for item in dialog_dict['utterances']:
+			labels = item["tags"].split(" ")
+			labels = list(filter(lambda x: x in mapping, labels))
+			one_hot_encoding = [int(x in labels) for x in mapping]
+			all_labels.append(one_hot_encoding)
 	return all_labels
 
 # Parse the json data
