@@ -61,7 +61,7 @@ def construct_data(json_data):
         neg_score
     ])
 
-    Y_train = sparse.csr_matrix(np.array(fetch_labels(json_data)).T)
+    Y_train = sparse.csr_matrix(np.array(fetch_labels(json_data)))
     return X_train, Y_train
 
 
