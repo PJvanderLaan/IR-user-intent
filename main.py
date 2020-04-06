@@ -28,14 +28,11 @@ def combine_features(array_features):
 def feature_analysis(json_data):
     utterance_similarity, dialog_similarity, question_mark, duplicate, keywords = fetch_content_features_pickle()
 
-    # Fetch the structural features.
     # Call calculate_and_store_as_pickle(json_data) to recalculate
     utterance_positions, normalized_utterance_positions, utterance_lengths, unique_utterance_lengths, unique_stemmed_utterance_lengths, commented_by_starter \
         = fetch_structural_features_pickle()
 
-    parsed_data = parse_data(json_data)
     # Call calculate_and_store_sentiment_as_pickle(parsed_data) to recalculate
-    # calculate_and_store_sentiment_as_pickle(parsed_data)
     negative, neutral, positive, exclamation, thank, feedback, pos_score, neg_score = fetch_sentiment_features_pickle()
 
     # Combine the content, structural and sentiment features to a CSR matrix
