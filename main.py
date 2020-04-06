@@ -2,6 +2,7 @@ import json
 from scipy import sparse
 import numpy as np
 
+from features.feature_content import fetch_content_features_pickle, calculate_and_store_content_as_pickle
 from features.feature_sentiment import calculate_sentimental_features, calculate_and_store_sentiment_as_pickle, \
     fetch_sentiment_features_pickle
 from util.msdialog_data_helper import parse_data, print_data_analytics
@@ -25,6 +26,8 @@ def combine_features(array_features):
 
 
 def feature_analysis(json_data):
+    utterance_similarity, dialog_similarity, question_mark, duplicate, keywords = fetch_content_features_pickle()
+
     # Fetch the structural features.
     # Call calculate_and_store_as_pickle(json_data) to recalculate
     utterance_positions, normalized_utterance_positions, utterance_lengths, unique_utterance_lengths, unique_stemmed_utterance_lengths, commented_by_starter \
@@ -38,7 +41,11 @@ def feature_analysis(json_data):
     # Combine the content, structural and sentiment features to a CSR matrix
     combined_features = combine_features([
         # content features
-        # ...
+        utterance_similarity,
+        dialog_similarity,
+        question_mark,
+        duplicate,
+        # keywords,
         # structural features
         utterance_positions,
         normalized_utterance_positions,
@@ -60,5 +67,4 @@ def feature_analysis(json_data):
 
 if __name__ == "__main__":
     json_data = load_data()
-
     feature_analysis(json_data)
