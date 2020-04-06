@@ -11,30 +11,26 @@ from features.feature_structural import calculate_and_store_as_pickle, fetch_str
 
 DATA_PATH = './data/MSDialog/MSDialog-Intent.json'
 
-# FEATURE_NAMES = [
-#     "utterance_similarity",
-#     dialog_similarity"",
-#     question_mark,
-#     duplicate,
-#     # keywords,
-#     # structural features
-#     utterance_positions,
-#     normalized_utterance_positions,
-#     utterance_lengths,
-#     unique_utterance_lengths,
-#     unique_stemmed_utterance_lengths,
-#     commented_by_starter,
-#     # sentiment features
-#     negative,
-#     neutral,
-#     positive,
-#     exclamation,
-#     thank,
-#     feedback,
-#     pos_score,
-#     neg_score
-#
-# ]
+FEATURE_NAMES = [
+    "utterance_similarity",
+    "dialog_similarity",
+    "question_mark",
+    "duplicate",
+    "utterance_positions",
+    "normalized_utterance_positions",
+    "utterance_lengths",
+    "unique_utterance_lengths",
+    "unique_stemmed_utterance_lengths",
+    "commented_by_starter",
+    "negative",
+    "neutral",
+    "positive",
+    "exclamation",
+    "thank",
+    "feedback",
+    "pos_score",
+    "neg_score"
+]
 
 def load_data(data_path=DATA_PATH):
     with open(data_path, mode='r') as json_file:
@@ -85,4 +81,5 @@ def construct_data(json_data):
 if __name__ == "__main__":
     json_data = load_data()
     X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
-    analyze_feature_importance(X_np_train, Y_np_train)
+    # analyze_feature_importance(X_np_train, Y_np_train, FEATURE_NAMES)
+    calculate_and_store_content_as_pickle(json_data)

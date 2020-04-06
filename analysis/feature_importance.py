@@ -3,7 +3,7 @@ from sklearn.ensemble import ExtraTreesClassifier
 import matplotlib.pyplot as plt
 
 
-def get_random_forrest_classifier(train, test):
+def get_random_forrest_classifier_results(train, test):
     # Implementation is inspired from:
     # https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
     cls = ExtraTreesClassifier(n_estimators=100)
@@ -15,6 +15,16 @@ def get_random_forrest_classifier(train, test):
     return importance_scores, sd
 
 
+def get_feature_importance_results(importance_scores, sd, feature_names):
+    results = []
+
+    for index, score in enumerate(importance_scores):
+        results.append([score, sd[index], feature_names[index]])
+
+    results.sort(key=lambda x: x[0])
+    print(results)
+
+
 # def plot_feature_importance():
 # plt.figure()
 # plt.title("Feature importance scores")
@@ -24,7 +34,9 @@ def get_random_forrest_classifier(train, test):
 # plt.xlim([-1, X.shape[1]])
 # plt.show()
 
-def analyze_feature_importance(train, test):
-    importance_scores, sd = get_random_forrest_classifier(train, test)
+def analyze_feature_importance(train, test, feature_names):
+    importance_scores, sd = get_random_forrest_classifier_results(train, test)
+
     print(importance_scores)
     print(sd)
+    get_feature_importance_results(importance_scores, sd, feature_names)
