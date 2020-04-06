@@ -21,7 +21,7 @@ def get_feature_importance_results(importance_scores, sd, feature_names):
     for index, score in enumerate(importance_scores):
         results.append([score, sd[index], feature_names[index]])
 
-    results.sort(key=lambda x: x[0])
+    results.sort(key=lambda x: x[0], reverse=True)
     print(results)
 
 
