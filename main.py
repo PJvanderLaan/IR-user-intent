@@ -16,16 +16,6 @@ def load_data(data_path=DATA_PATH):
     with open(data_path, mode='r') as json_file:
         return json.load(json_file)
 
-
-def feature_to_csr(feature):
-    return sparse.csr_matrix(np.array([feature]).T)
-
-
-def combine_features(array_features):
-    csr_features = list(map(lambda x: feature_to_csr(x), array_features))
-    return sparse.hstack((csr_features))
-
-
 def construct_data(json_data):
     utterance_similarity, dialog_similarity, question_mark, duplicate, keywords = fetch_content_features_pickle()
 
@@ -37,7 +27,7 @@ def construct_data(json_data):
     negative, neutral, positive, exclamation, thank, feedback, pos_score, neg_score = fetch_sentiment_features_pickle()
 
     # Combine the content, structural and sentiment features to a CSR matrix
-    X_train = combine_features([
+    X_np_train = np.array([
         # content features
         utterance_similarity,
         dialog_similarity,
@@ -60,13 +50,15 @@ def construct_data(json_data):
         feedback,
         pos_score,
         neg_score
-    ])
+    ]).T
+    X_csr_train = sparse.csr_matrix(X_np_train)
 
-    Y_train = sparse.csr_matrix(np.array(fetch_labels(json_data)))
-    return X_train, Y_train
+    Y_np_train = np.array(fetch_labels(json_data))
+    Y_csr_train = sparse.csr_matrix(Y_np_train)
+    return X_csr_train, Y_csr_train, X_np_train, Y_np_train
 
 
 if __name__ == "__main__":
     json_data = load_data()
-    X_train, Y_train = construct_data(json_data)
+    X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
     chaining_svm(X_train, Y_train)
