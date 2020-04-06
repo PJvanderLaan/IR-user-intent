@@ -3,7 +3,7 @@ from scipy import sparse
 import numpy as np
 from sklearn.model_selection import KFold
 
-from classifier.knn import knn_classifier, knn_predict, knn_get_accuracy, knn_get_recall, knn_get_precision
+from classifier.knn import knn_classifier, knn_predict, knn_get_accuracy, knn_get_recall, knn_get_precision, knn_get_f1
 from features.feature_content import fetch_content_features_pickle, calculate_and_store_content_as_pickle
 from features.feature_sentiment import calculate_sentimental_features, calculate_and_store_sentiment_as_pickle, \
     fetch_sentiment_features_pickle
@@ -72,6 +72,7 @@ if __name__ == "__main__":
         knn_pred = knn_predict(knn, X_test)
         knn_prec = knn_get_precision(y_test, knn_pred)
         knn_recall = knn_get_recall(y_test, knn_pred)
+        knn_f1 = knn_get_f1(y_test, knn_pred)
         knn_acc = knn_get_accuracy(y_test, knn_pred)
-        print("Acc:{}\tRecall:{}\tPrecision:{}".format(knn_acc, knn_recall, knn_prec))
+        print("Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(knn_acc, knn_recall, knn_prec, knn_f1))
     pass
