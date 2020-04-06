@@ -95,4 +95,6 @@ def construct_data(json_data):
 if __name__ == "__main__":
     json_data = load_data()
     X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
+
+    # Feature importance analysis.
     analyze_feature_importance(X_np_train, Y_np_train, FEATURE_NAMES)
