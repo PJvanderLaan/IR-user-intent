@@ -67,7 +67,7 @@ def get_duplicate(json_data):
     results = []
 
     for utterance in all_utterances:
-        if "same" or "similar" in utterance.lower():
+        if "same" in utterance.lower() or "similar" in utterance.lower():
             results.append(1)
         else:
             results.append(0)
