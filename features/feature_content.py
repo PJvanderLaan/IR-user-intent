@@ -1,7 +1,7 @@
 from util.msdialog_data_helper import parse_data
 from util.pickle_helper import get_pickled_data, store_data_as_pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
-
+from util.msdialog_data_helper import clean_str
 # Path to content feature pickle
 CACHED_DATA_FILENAME = 'content_pickle_data'
 
@@ -12,7 +12,7 @@ def get_utterance_similarity(json_data):
     for dialog_id, dialog_dict in json_data.items():
         dialog_data = dialog_dict['utterances']
 
-        utterances = [item["utterance"] for item in dialog_data]
+        utterances = [clean_str(item["utterance"]) for item in dialog_data]
         tfidf = compute_cosine_similarity(utterances)
         # Get the cosine similarity score between each utterance and the first utterance of the dialog.
         for i in range(0, tfidf.shape[0]):
@@ -27,7 +27,7 @@ def get_dialog_similarity(json_data):
     for dialog_id, dialog_dict in json_data.items():
         dialog_data = dialog_dict['utterances']
 
-        utterances = [item["utterance"] for item in dialog_data]
+        utterances = [clean_str(item["utterance"]) for item in dialog_data]
         tfidf = compute_cosine_similarity(utterances)
         # Compute the average cosine similarity score between each utterance and the entire dialog.
         for i in range(tfidf.shape[0]):
@@ -53,7 +53,7 @@ def get_question_mark(json_data):
     results = []
 
     for utterance in all_utterances:
-        if "?" in utterance:
+        if "?" in clean_str(utterance):
             results.append(1)
         else:
             results.append(0)
@@ -67,7 +67,7 @@ def get_duplicate(json_data):
     results = []
 
     for utterance in all_utterances:
-        if "same" in utterance.lower() or "similar" in utterance.lower():
+        if "same" in clean_str(utterance) or "similar" in clean_str(utterance):
             results.append(1)
         else:
             results.append(0)
@@ -81,7 +81,7 @@ def get_keyword_feature(json_data, keyword):
     results = []
 
     for utterance in all_utterances:
-        if keyword in utterance.lower():
+        if keyword in clean_str(utterance):
             results.append(1)
         else:
             results.append(0)
