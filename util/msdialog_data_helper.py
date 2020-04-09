@@ -13,13 +13,19 @@ def checkIfUser(title):
 
 # Fetch the labels as an array of one hot coding rows.
 def fetch_labels(json_data, mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA', 'PF', 'NF', 'GG', 'JK', 'O']):
+	blacklist_mapping = ['GG', 'JK', 'O']
 	all_labels = []
 	for dialog_id, dialog_dict in json_data.items(): 
 		for item in dialog_dict['utterances']:
 			labels = item["tags"].split(" ")
 			labels = list(filter(lambda x: x in mapping, labels))
 			one_hot_encoding = [x in labels for x in mapping]
-			all_labels.append(one_hot_encoding)
+			clean_one_hot_encoding  = [x in labels and x not in blacklist_mapping for x in mapping]
+			
+			if (clean_one_hot_encoding.count(1) > 0):
+				all_labels.append(clean_one_hot_encoding)
+			else:
+				all_labels.append(one_hot_encoding)
 	return all_labels
 
 # Parse the json data

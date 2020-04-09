@@ -67,18 +67,19 @@ def construct_data(json_data):
 
 if __name__ == "__main__":
     json_data = load_data()
-    X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
-    kf = KFold(n_splits=5)
-    kf.get_n_splits(X_np_train)
-    for train_index, test_index in kf.split(X_np_train):
-        print("TRAIN:", train_index, "TEST:", test_index)
-        X_train, X_test = X_np_train[train_index], X_np_train[test_index]
-        y_train, y_test = Y_np_train[train_index], Y_np_train[test_index]
-        knn = knn_classifier(X_train, y_train, 3)
-        knn_pred = knn_predict(knn, X_test)
-        knn_prec = knn_get_precision(y_test, knn_pred)
-        knn_recall = knn_get_recall(y_test, knn_pred)
-        knn_f1 = knn_get_f1(y_test, knn_pred)
-        knn_acc = knn_get_accuracy(y_test, knn_pred)
-        print("Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(knn_acc, knn_recall, knn_prec, knn_f1))
-    pass
+    print_data_analytics(json_data)
+    # X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
+    # kf = KFold(n_splits=5)
+    # kf.get_n_splits(X_np_train)
+    # for train_index, test_index in kf.split(X_np_train):
+    #     print("TRAIN:", train_index, "TEST:", test_index)
+    #     X_train, X_test = X_np_train[train_index], X_np_train[test_index]
+    #     y_train, y_test = Y_np_train[train_index], Y_np_train[test_index]
+    #     knn = knn_classifier(X_train, y_train, 3)
+    #     knn_pred = knn_predict(knn, X_test)
+    #     knn_prec = knn_get_precision(y_test, knn_pred)
+    #     knn_recall = knn_get_recall(y_test, knn_pred)
+    #     knn_f1 = knn_get_f1(y_test, knn_pred)
+    #     knn_acc = knn_get_accuracy(y_test, knn_pred)
+    #     print("Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(knn_acc, knn_recall, knn_prec, knn_f1))
+    # pass
