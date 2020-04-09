@@ -5,6 +5,7 @@ from pprint import pprint
 from skmultilearn.problem_transform import LabelPowerset
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
+from classifier.evaluation import get_accuracy
 
 # Testing grid search parameters.
 # Based on: http://scikit.ml/api/skmultilearn.problem_transform.lp.html
@@ -17,7 +18,7 @@ parameters = {
 
 # Hyper parameter optimization for random forest using grid search.
 def calculate_best_parameters(train, test):
-    clf = GridSearchCV(LabelPowerset(), parameters, scoring='accuracy')
+    clf = GridSearchCV(LabelPowerset(), parameters, scoring=get_accuracy)
     clf.fit(train, test)
 
     print(clf.best_params_, clf.best_score_)

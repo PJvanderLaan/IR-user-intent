@@ -7,6 +7,7 @@ from sklearn.model_selection import KFold
 from classifier.evaluation import get_precision, get_recall, get_f1, get_accuracy
 from classifier.knn import knn_classifier, knn_predict
 from analysis.feature_importance import analyze_feature_importance
+from classifier.random_forest import rf_classifier, rf_predict
 from features.feature_content import fetch_content_features_pickle, calculate_and_store_content_as_pickle
 from features.feature_sentiment import calculate_sentimental_features, calculate_and_store_sentiment_as_pickle, \
     fetch_sentiment_features_pickle
@@ -99,25 +100,41 @@ def construct_data(json_data):
 if __name__ == "__main__":
     json_data = load_data()
 
-    # Feature importance analysis.
-    analyze_feature_importance(X_np_train, Y_np_train, FEATURE_NAMES)
-
     # calculate_and_store_content_as_pickle(json_data)
     # calculate_and_store_sentiment_as_pickle(parse_data(json_data))
     # calculate_and_store_as_pickle(json_data)
 
     X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
-    kf = KFold(n_splits=5)
+
+    # Feature importance analysis.
+    analyze_feature_importance(X_np_train, Y_np_train, FEATURE_NAMES)
+
+    # kf = KFold(n_splits=5)
+    # kf.get_n_splits(X_np_train)
+    # for train_index, test_index in kf.split(X_np_train):
+    #     print("TRAIN:", train_index, "TEST:", test_index)
+    #     X_train, X_test = X_np_train[train_index], X_np_train[test_index]
+    #     y_train, y_test = Y_np_train[train_index], Y_np_train[test_index]
+    #     knn = knn_classifier(X_train, y_train, 3)
+    #     knn_pred = knn_predict(knn, X_test)
+    #     knn_prec = get_precision(y_test, knn_pred)
+    #     knn_recall = get_recall(y_test, knn_pred)
+    #     knn_f1 = get_f1(y_test, knn_pred)
+    #     knn_acc = get_accuracy(y_test, knn_pred)
+    #     print("Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(knn_acc, knn_recall, knn_prec, knn_f1))
+    # pass
+
+    kf = KFold(n_splits=10)
     kf.get_n_splits(X_np_train)
     for train_index, test_index in kf.split(X_np_train):
         print("TRAIN:", train_index, "TEST:", test_index)
         X_train, X_test = X_np_train[train_index], X_np_train[test_index]
         y_train, y_test = Y_np_train[train_index], Y_np_train[test_index]
-        knn = knn_classifier(X_train, y_train, 3)
-        knn_pred = knn_predict(knn, X_test)
-        knn_prec = get_precision(y_test, knn_pred)
-        knn_recall = get_recall(y_test, knn_pred)
-        knn_f1 = get_f1(y_test, knn_pred)
-        knn_acc = get_accuracy(y_test, knn_pred)
-        print("Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(knn_acc, knn_recall, knn_prec, knn_f1))
+        rf = rf_classifier(X_train, y_train, 200, 'gini')
+        rf_pred = rf_predict(rf, X_test)
+        rf_prec = get_precision(y_test, rf_pred)
+        rf_recall = get_recall(y_test, rf_pred)
+        rf_f1 = get_f1(y_test, rf_pred)
+        rf_acc = get_accuracy(y_test, rf_pred)
+        print("Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(rf_acc, rf_recall, rf_prec, rf_f1))
     pass
