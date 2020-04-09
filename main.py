@@ -1,8 +1,11 @@
 import json
 from scipy import sparse
 import numpy as np
+from sklearn.datasets import make_gaussian_quantiles
 from sklearn.model_selection import KFold
 
+from classifier.adaboost import get_adaboost, adaboost_predict, adaboost_get_f1, adaboost_get_accuracy, \
+    adaboost_get_recall, adaboost_get_precision
 from classifier.knn import knn_classifier, knn_predict, knn_get_accuracy, knn_get_recall, knn_get_precision, knn_get_f1
 from features.feature_content import fetch_content_features_pickle, calculate_and_store_content_as_pickle
 from features.feature_sentiment import calculate_sentimental_features, calculate_and_store_sentiment_as_pickle, \
@@ -66,6 +69,8 @@ def construct_data(json_data):
 
 
 if __name__ == "__main__":
+    gx, gy = make_gaussian_quantiles(n_samples=13000, n_features=10,
+                                   n_classes=3, random_state=1)
     json_data = load_data()
     X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
     kf = KFold(n_splits=5)
@@ -80,5 +85,13 @@ if __name__ == "__main__":
         knn_recall = knn_get_recall(y_test, knn_pred)
         knn_f1 = knn_get_f1(y_test, knn_pred)
         knn_acc = knn_get_accuracy(y_test, knn_pred)
-        print("Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(knn_acc, knn_recall, knn_prec, knn_f1))
+        print("KNN: Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(knn_acc, knn_recall, knn_prec, knn_f1))
+        ada = get_adaboost(X_train, y_train)
+        ada_pred = adaboost_predict(ada, X_test)
+        ada_prec = adaboost_get_precision(y_test, ada_pred)
+        ada_recall = adaboost_get_recall(y_test, ada_pred)
+        ada_f1 = adaboost_get_f1(y_test, ada_pred)
+        ada_acc = adaboost_get_accuracy(y_test, ada_pred)
+        print("ADA: Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(ada_acc, ada_recall, ada_prec, ada_f1))
+
     pass
