@@ -1,13 +1,14 @@
 import json
 from scipy import sparse
 import numpy as np
+import random
 from sklearn.model_selection import KFold
 
 from classifier.knn import knn_classifier, knn_predict, knn_get_accuracy, knn_get_recall, knn_get_precision, knn_get_f1
 from features.feature_content import fetch_content_features_pickle, calculate_and_store_content_as_pickle
 from features.feature_sentiment import calculate_sentimental_features, calculate_and_store_sentiment_as_pickle, \
     fetch_sentiment_features_pickle
-from util.msdialog_data_helper import parse_data, print_data_analytics, fetch_labels, fetch_preprocessed_labels
+from util.msdialog_data_helper import parse_data, print_data_analytics, fetch_labels, fetch_preprocessed_labels, fetch_Y_labels
 from features.feature_structural import calculate_and_store_as_pickle, fetch_structural_features_pickle
 
 DATA_PATH = './data/MSDialog/MSDialog-Intent.json'
@@ -60,16 +61,12 @@ def construct_data(json_data):
     ]).T
     X_csr_train = sparse.csr_matrix(X_np_train)
 
-    labels = np.array(fetch_labels(json_data))
-    other = np.array(fetch_preprocessed_labels(json_data))
-    print(labels.shape)
-    print(other.shape)
-    Y_np_train = np.array(fetch_preprocessed_labels(json_data))
+    Y_np_train = np.array(fetch_Y_labels(json_data))
     Y_csr_train = sparse.csr_matrix(Y_np_train)
     return X_csr_train, Y_csr_train, X_np_train, Y_np_train
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
     json_data = load_data()
     # print_data_analytics(json_data)
 
