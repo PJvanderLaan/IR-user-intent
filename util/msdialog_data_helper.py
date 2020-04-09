@@ -14,6 +14,7 @@ def checkIfUser(title):
 
 def fetch_Y_labels(json_data, mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA', 'PF', 'NF', 'GG', 'JK', 'O']):
 	most_frequent = fetch_preprocessed_labels(json_data)
+	
 	labels = fetch_labels(json_data)
 	result = []
 	for label in labels:
@@ -26,7 +27,6 @@ def fetch_Y_labels(json_data, mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA',
 			random_label[random_true_index] = True
 			result.append(random_label)
 	return result
-
 
 # Fetch the labels as an array of one hot coding rows.
 def fetch_labels(json_data, mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA', 'PF', 'NF', 'GG', 'JK', 'O']):
@@ -98,15 +98,17 @@ def fetch_preprocessed_labels(json_data, number_of_tags=32):
 	most_frequent_list.append(others_ohe)
 	return most_frequent_list
 
-	# tags = list(Counter(tuple(item) for item in labels).keys())
-	# counts = list(Counter(tuple(item) for item in labels).values())
-
-	# print_number_top_tags = 32
-
-	# for i in range(0, print_number_top_tags):
-	# 	print(f' {i + 1}. {tags[i]} ({counts[i]})')
-
-
+def print_most_frequent_labels(json_data):
+	most_frequent = fetch_preprocessed_labels(json_data)
+	
+	rr = []
+	for labels in most_frequent:
+		indexes = [i for i, x in enumerate(labels) if x == True]
+		things = list(map(lambda x: mapping[x], indexes))
+		rr.append(things)
+	
+	for r in rr:
+		print(r)
 
 
 

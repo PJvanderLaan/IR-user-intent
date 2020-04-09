@@ -67,7 +67,6 @@ def construct_data(json_data):
 
 if __name__ == "__main__":    
     json_data = load_data()
-    # print_data_analytics(json_data)
 
     X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
     kf = KFold(n_splits=5)

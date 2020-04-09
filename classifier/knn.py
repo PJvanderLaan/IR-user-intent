@@ -14,23 +14,62 @@ def knn_predict(clf, dataX):
 
 
 def knn_get_accuracy(testY, predY):
-    acc = accuracy_score(testY, predY)
-    return acc
+    accuracies = []
+    for label_index, singleY in enumerate(testY):
+        correct = 0
+        union = 0
+        for i, value in enumerate(singleY):
+            if value == True and predY[label_index][i] == True:
+                correct = correct + 1
+
+            if value == True or predY[label_index][i] == True:
+                union = union + 1
+        accuracies.append(correct/union)
+
+    return sum(accuracies)/len(accuracies)
 
 
 def knn_get_f1(testY, predY):
-    f1 = f1_score(testY, predY, average='macro')
-    return f1
+    precision = knn_get_precision(testY, predY)
+    recall = knn_get_recall(testY, predY)
+
+    return 2 * ((precision * recall)/(precision + recall))
 
 
 def knn_get_precision(testY, predY):
-    prec = precision_score(testY, predY, average='macro')
-    return prec
+    precisions = []
+    for label_index, singleY in enumerate(testY):
+        correct = 0
+        predicted = 0
+        for i, value in enumerate(singleY):
+            if value == True and predY[label_index][i] == True:
+                correct = correct + 1
+
+            if predY[label_index][i] == True:
+                predicted = predicted + 1
+        if (predicted != 0):
+            precisions.append(correct/predicted)
+        # else:
+        #     precisions.append(0)
+
+    return sum(precisions)/len(precisions)
 
 
 def knn_get_recall(testY, predY):
-    rec = recall_score(testY, predY, average='macro')
-    return rec
+    precisions = []
+    for label_index, singleY in enumerate(testY):
+        correct = 0
+        true_labels = 0
+        for i, value in enumerate(singleY):
+            if value == True and predY[label_index][i] == True:
+                correct = correct + 1
+
+            if testY[label_index][i] == True:
+                true_labels = true_labels + 1
+
+        precisions.append(correct/true_labels)
+
+    return sum(precisions)/len(precisions)
 
 
 def knn_get_confusion_matrix(clf, testY, predY):
