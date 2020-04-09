@@ -84,8 +84,8 @@ def knn_kfold_fold_search(dataX, dataY):
     fig_var.savefig('fold_var.png', dpi=600)
 
 
-def knn_search(dataX, dataY, n_folds=5):
-    n_neighbours = range(1, 4)
+def knn_search(dataX, dataY, n_folds=7):
+    n_neighbours = range(1, 20)
     n_acc = []
     n_prec = []
     n_rec = []
@@ -132,12 +132,12 @@ def knn_search(dataX, dataY, n_folds=5):
 
     fig = plt.figure()
     ax = fig.gca()
-    plt.plot(n_neighbours, accs, label='Mean Accuracy')
-    plt.plot(n_neighbours, precs, label='Mean Precision')
-    plt.plot(n_neighbours, recs, label='Mean Recall')
-    plt.plot(n_neighbours, f1s, label='Mean F1-score')
-    plt.xlabel('# of folds')
+    plt.plot(n_neighbours, accs, label='Accuracy')
+    plt.plot(n_neighbours, precs, label='Precision')
+    plt.plot(n_neighbours, recs, label='Recall')
+    plt.plot(n_neighbours, f1s, label='F1-score')
+    plt.xlabel('k (# of neighbours)')
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
-    plt.legend()
+    plt.legend(loc=5)
     plt.show()
     fig.savefig('knn_n_neighbours_search.png', dpi=600)
