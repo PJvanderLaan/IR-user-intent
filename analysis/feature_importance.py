@@ -1,35 +1,13 @@
 import numpy as np
-from sklearn.ensemble import ExtraTreesClassifier
 import matplotlib.pyplot as plt
 from pprint import pprint
-from skmultilearn.problem_transform import LabelPowerset
-from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import RandomForestClassifier
-from classifier.evaluation import get_accuracy
-
-# Testing grid search parameters.
-# Based on: http://scikit.ml/api/skmultilearn.problem_transform.lp.html
-parameters = {
-    'classifier': [RandomForestClassifier()],
-    'classifier__criterion': ['gini', 'entropy'],
-    'classifier__n_estimators': [10, 20, 50, 100, 200],
-}
-
-
-# Hyper parameter optimization for random forest using grid search.
-def calculate_best_parameters(train, test):
-    clf = GridSearchCV(LabelPowerset(), parameters, scoring=get_accuracy)
-    clf.fit(train, test)
-
-    print(clf.best_params_, clf.best_score_)
-
+from classifier.random_forest import rf_classifier
 
 # Fit random forest classifier and calculate importance scores.
 def get_random_forest_classifier_results(train, test):
     # This implementation is based on:
     # https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
-    cls = ExtraTreesClassifier(n_estimators=200, criterion='gini')
-    cls.fit(train, test)
+    cls = rf_classifier(train, test, n_estimators=200, criterion='gini')
 
     # Calculate importance scores and standard deviation values for each tree.
     importance_scores = cls.feature_importances_
