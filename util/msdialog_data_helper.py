@@ -1,5 +1,5 @@
 from collections import Counter
-from itertools import groupby
+import random
 
 # Append all items of an array to an array
 def appendAll(array, items):
@@ -11,6 +11,22 @@ def appendAll(array, items):
 # Check if the title equals user
 def checkIfUser(title):
 	return title.lower() == "user"
+
+def fetch_Y_labels(json_data, mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA', 'PF', 'NF', 'GG', 'JK', 'O']):
+	most_frequent = fetch_preprocessed_labels(json_data)
+	labels = fetch_labels(json_data)
+	result = []
+	for label in labels:
+		if label in most_frequent:
+			result.append(label)
+		else:
+			indexes = [i for i, x in enumerate(label) if x == True]
+			random_true_index = random.randint(0, len(indexes) - 1)
+			random_label = list(map(lambda x: False, mapping))
+			random_label[random_true_index] = True
+			result.append(random_label)
+	return result
+
 
 # Fetch the labels as an array of one hot coding rows.
 def fetch_labels(json_data, mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA', 'PF', 'NF', 'GG', 'JK', 'O']):

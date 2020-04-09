@@ -3,7 +3,6 @@ from scipy import sparse
 import numpy as np
 import random
 from sklearn.model_selection import KFold
-
 from classifier.knn import knn_classifier, knn_predict, knn_get_accuracy, knn_get_recall, knn_get_precision, knn_get_f1
 from features.feature_content import fetch_content_features_pickle, calculate_and_store_content_as_pickle
 from features.feature_sentiment import calculate_sentimental_features, calculate_and_store_sentiment_as_pickle, \
