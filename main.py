@@ -7,7 +7,7 @@ from classifier.knn import knn_classifier, knn_predict, knn_get_accuracy, knn_ge
 from features.feature_content import fetch_content_features_pickle, calculate_and_store_content_as_pickle
 from features.feature_sentiment import calculate_sentimental_features, calculate_and_store_sentiment_as_pickle, \
     fetch_sentiment_features_pickle
-from util.msdialog_data_helper import parse_data, print_data_analytics, fetch_labels
+from util.msdialog_data_helper import parse_data, print_data_analytics, fetch_labels, fetch_preprocessed_labels
 from features.feature_structural import calculate_and_store_as_pickle, fetch_structural_features_pickle
 
 DATA_PATH = './data/MSDialog/MSDialog-Intent.json'
@@ -60,26 +60,31 @@ def construct_data(json_data):
     ]).T
     X_csr_train = sparse.csr_matrix(X_np_train)
 
-    Y_np_train = np.array(fetch_labels(json_data))
+    labels = np.array(fetch_labels(json_data))
+    other = np.array(fetch_preprocessed_labels(json_data))
+    print(labels.shape)
+    print(other.shape)
+    Y_np_train = np.array(fetch_preprocessed_labels(json_data))
     Y_csr_train = sparse.csr_matrix(Y_np_train)
     return X_csr_train, Y_csr_train, X_np_train, Y_np_train
 
 
 if __name__ == "__main__":
     json_data = load_data()
-    print_data_analytics(json_data)
-    # X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
-    # kf = KFold(n_splits=5)
-    # kf.get_n_splits(X_np_train)
-    # for train_index, test_index in kf.split(X_np_train):
-    #     print("TRAIN:", train_index, "TEST:", test_index)
-    #     X_train, X_test = X_np_train[train_index], X_np_train[test_index]
-    #     y_train, y_test = Y_np_train[train_index], Y_np_train[test_index]
-    #     knn = knn_classifier(X_train, y_train, 3)
-    #     knn_pred = knn_predict(knn, X_test)
-    #     knn_prec = knn_get_precision(y_test, knn_pred)
-    #     knn_recall = knn_get_recall(y_test, knn_pred)
-    #     knn_f1 = knn_get_f1(y_test, knn_pred)
-    #     knn_acc = knn_get_accuracy(y_test, knn_pred)
-    #     print("Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(knn_acc, knn_recall, knn_prec, knn_f1))
-    # pass
+    # print_data_analytics(json_data)
+
+    X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
+    kf = KFold(n_splits=5)
+    kf.get_n_splits(X_np_train)
+    for train_index, test_index in kf.split(X_np_train):
+        print("TRAIN:", train_index, "TEST:", test_index)
+        X_train, X_test = X_np_train[train_index], X_np_train[test_index]
+        y_train, y_test = Y_np_train[train_index], Y_np_train[test_index]
+        knn = knn_classifier(X_train, y_train, 3)
+        knn_pred = knn_predict(knn, X_test)
+        knn_prec = knn_get_precision(y_test, knn_pred)
+        knn_recall = knn_get_recall(y_test, knn_pred)
+        knn_f1 = knn_get_f1(y_test, knn_pred)
+        knn_acc = knn_get_accuracy(y_test, knn_pred)
+        print("Acc:{}\tRecall:{}\tPrecision:{}\tF1-score:{}".format(knn_acc, knn_recall, knn_prec, knn_f1))
+    pass
