@@ -123,9 +123,9 @@ def print_data_bias(json_data,
 
     for labels in most_frequent:
         indexes = [i for i, x in enumerate(labels[0]) if x is True]
-        things = list(map(lambda x: mapping[x], indexes))
+        tag_name = list(map(lambda x: mapping[x], indexes))
         frequency = labels[1]/len(all_labels) * 100
-        print(f'{things}, {frequency}%')
+        print(f'{tag_name}, {frequency}%')
 
 
 def fetch_preprocessed_labels(json_data, number_of_tags=32):
