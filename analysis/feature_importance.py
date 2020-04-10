@@ -7,11 +7,12 @@ from classifier.random_forest import rf_classifier
 def get_random_forest_classifier_results(train, test):
     # This implementation is based on:
     # https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
-    cls = rf_classifier(train, test, n_estimators=200, criterion='gini')
+    clf = rf_classifier()
+    clf.fit(train, test)
 
     # Calculate importance scores and standard deviation values for each tree.
-    importance_scores = cls.feature_importances_
-    sd = np.std([tree.feature_importances_ for tree in cls.estimators_],
+    importance_scores = clf.feature_importances_
+    sd = np.std([tree.feature_importances_ for tree in clf.estimators_],
                 axis=0)
 
     return importance_scores, sd

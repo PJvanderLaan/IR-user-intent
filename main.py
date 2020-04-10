@@ -109,7 +109,7 @@ if __name__ == "__main__":
     X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
 
     # Feature importance analysis.
-    # analyze_feature_importance(X_np_train, Y_np_train, FEATURE_NAMES)
+    analyze_feature_importance(X_np_train, Y_np_train, FEATURE_NAMES)
 
     kf = KFold(n_splits=5)
     kf.get_n_splits(X_np_train)
