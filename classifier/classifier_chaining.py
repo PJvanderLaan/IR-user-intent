@@ -4,9 +4,8 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.multioutput import ClassifierChain
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
 
-from util.pickle_helper import get_pickled_data, store_data_as_pickle
+from util.pickle_helper import store_data_as_pickle
 from classifier.evaluation import *
 
 CACHED_DATA_FILENAME = 'fitted_chain'
@@ -22,7 +21,8 @@ def chaining_adaboost(X, Y):
     print(
         f'{get_accuracy(Y_test, y_pred)}\t{get_f1(Y_test, y_pred)}\t{get_recall(Y_test, y_pred)}\t{get_precision(Y_test, y_pred)}')
 
-def chaining_svm(X, Y, C=0.5, max_iter=-1, folds=10):
+
+def chaining_svm(X, Y, max_iter=-1):
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=.2, random_state=0)
 
     Cs = np.logspace(-2, 10, 30)
