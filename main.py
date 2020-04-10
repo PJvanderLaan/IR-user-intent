@@ -2,7 +2,10 @@ import json
 from scipy import sparse
 import numpy as np
 import random
-from sklearn.model_selection import KFold
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import make_scorer
+from sklearn.model_selection import KFold, cross_validate
 
 from classifier.evaluation import get_precision, get_recall, get_f1, get_accuracy
 from classifier.knn import knn_classifier, knn_predict
@@ -38,11 +41,11 @@ FEATURE_NAMES = [
     "Thank",
     "Exclamation Mark",
     "Feedback",
-    "Sentiment Scores:",
-    "Sentiment Scores:",
-    "Sentiment Scores:",
-    "Opinion Lexicon:",
-    "Opinion Lexicon:"
+    "Sentiment Scores: negative",
+    "Sentiment Scores: neutral",
+    "Sentiment Scores: positive",
+    "Opinion Lexicon: positive",
+    "Opinion Lexicon: negative"
 ]
 
 
