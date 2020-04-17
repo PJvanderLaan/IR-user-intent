@@ -1,6 +1,3 @@
-from sklearn.metrics import multilabel_confusion_matrix
-
-
 def get_accuracy(testY, predY):
     accuracies = []
     for label_index, singleY in enumerate(testY):
