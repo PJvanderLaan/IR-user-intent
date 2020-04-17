@@ -21,6 +21,8 @@ def get_f1(testY, predY):
     precision = get_precision(testY, predY)
     recall = get_recall(testY, predY)
 
+    if (precision + recall) == 0:
+        return 0
     return 2 * ((precision * recall)/(precision + recall))
 
 
@@ -39,7 +41,8 @@ def get_precision(testY, predY):
             precisions.append(correct/predicted)
         # else:
         #     precisions.append(0)
-
+    if (len(precisions) == 0):
+        return 0
     return sum(precisions)/len(precisions)
 
 

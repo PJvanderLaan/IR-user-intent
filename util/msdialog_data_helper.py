@@ -17,20 +17,21 @@ def checkIfUser(title):
 
 
 def fetch_Y_labels(json_data, mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA', 'PF', 'NF', 'GG', 'JK', 'O']):
-	most_frequent = fetch_preprocessed_labels(json_data)
-	
-	labels = fetch_labels(json_data)
-	result = []
-	for label in labels:
-		if label in most_frequent:
-			result.append(label)
-		else:
-			indexes = [i for i, x in enumerate(label) if x == True]
-			random_true_index = random.randint(0, len(indexes) - 1)
-			random_label = list(map(lambda x: False, mapping))
-			random_label[random_true_index] = True
-			result.append(random_label)
-	return result
+    most_frequent = fetch_preprocessed_labels(json_data)
+
+    labels = fetch_labels(json_data)
+    result = []
+    for label in labels:
+        if label in most_frequent:
+            result.append(label)
+        else:
+            indexes = [i for i, x in enumerate(label) if x == True]
+            random_true_index = random.randint(0, len(indexes) - 1)
+            random_label = list(map(lambda x: False, mapping))
+            random_label[random_true_index] = True
+            result.append(random_label)
+    return result
+
 
 # Fetch the labels as an array of one hot coding rows.
 def fetch_labels(json_data, mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA', 'PF', 'NF', 'GG', 'JK', 'O']):
@@ -94,6 +95,7 @@ def parse_dialog(dialog_dict):
 
     return utterances, isUser, tags, utterance_positions
 
+
 # Print data analytics
 def print_data_analytics(json_data):
     all_utterances, all_isUsers, all_tags, _ = parse_data(json_data)
@@ -113,17 +115,18 @@ def print_data_analytics(json_data):
     for i in range(0, print_number_top_tags):
         print(f' {i + 1}. {tags[i]} ({counts[i]})')
 
-def print_most_frequent_labels(json_data):
-	most_frequent = fetch_preprocessed_labels(json_data)
-	
-	rr = []
-	for labels in most_frequent:
-		indexes = [i for i, x in enumerate(labels) if x == True]
-		things = list(map(lambda x: mapping[x], indexes))
-		rr.append(things)
-	
-	for r in rr:
-		print(r)
+
+def print_data_bias(json_data,
+                    mapping=['OQ', 'RQ', 'CQ', 'FD', 'FQ', 'IR', 'PA', 'PF', 'NF', 'GG', 'JK', 'O']):
+    most_frequent = fetch_preprocessed_labels_with_counts(json_data)
+    all_labels = fetch_labels(json_data)
+
+    for labels in most_frequent:
+        indexes = [i for i, x in enumerate(labels[0]) if x is True]
+        tag_name = list(map(lambda x: mapping[x], indexes))
+        frequency = labels[1]/len(all_labels) * 100
+        print(f'{tag_name}, {frequency}%')
+
 
 def fetch_preprocessed_labels(json_data, number_of_tags=32):
     others_ohe = [False, False, False, False, False, False, False, False, False, False, False, True]
@@ -132,4 +135,14 @@ def fetch_preprocessed_labels(json_data, number_of_tags=32):
     most_frequent = counted.most_common(number_of_tags)
     most_frequent_list = list(map(lambda x: list(x[0]), most_frequent))
     most_frequent_list.append(others_ohe)
+    return most_frequent_list
+
+
+def fetch_preprocessed_labels_with_counts(json_data, number_of_tags=32):
+    others_ohe = [False, False, False, False, False, False, False, False, False, False, False, True]
+    labels = fetch_labels(json_data)
+    counted = Counter(tuple(item) for item in labels)
+    most_frequent = counted.most_common(number_of_tags)
+    most_frequent_list = list(map(lambda x: list((x[0], x[1])), most_frequent))
+    most_frequent_list.append((others_ohe, 1))
     return most_frequent_list

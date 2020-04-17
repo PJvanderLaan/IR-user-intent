@@ -1,10 +1,7 @@
 import json
 from scipy import sparse
 import numpy as np
-import random
 
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import make_scorer
 from sklearn.model_selection import KFold, cross_validate
 
 from classifier.evaluation import get_precision, get_recall, get_f1, get_accuracy
@@ -17,7 +14,6 @@ from features.feature_sentiment import calculate_sentimental_features, calculate
     fetch_sentiment_features_pickle
 from util.msdialog_data_helper import parse_data, print_data_analytics, fetch_labels, fetch_preprocessed_labels, fetch_Y_labels
 from features.feature_structural import calculate_and_store_as_pickle, fetch_structural_features_pickle
-import statistics
 
 DATA_PATH = './data/MSDialog/MSDialog-Intent.json'
 
@@ -110,6 +106,7 @@ if __name__ == "__main__":
     # calculate_and_store_as_pickle(json_data)
 
     X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
+    # chaining_svm(X_np_train, Y_np_train)
 
     # Feature importance analysis.
     analyze_feature_importance(X_np_train, Y_np_train, FEATURE_NAMES)
