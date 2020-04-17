@@ -2,8 +2,9 @@ import json
 from scipy import sparse
 import numpy as np
 
-from sklearn.model_selection import KFold, cross_validate
+from sklearn.model_selection import KFold, cross_validate, train_test_split
 
+from analysis.misclassified import get_misclassified
 from classifier.evaluation import get_precision, get_recall, get_f1, get_accuracy
 from classifier.knn import knn_classifier, knn_predict
 from analysis.feature_importance import analyze_feature_importance
@@ -100,12 +101,29 @@ def construct_data(json_data):
 
 if __name__ == "__main__":
     json_data = load_data()
+    parsed = parse_data(json_data)
 
     # calculate_and_store_content_as_pickle(json_data)
     # calculate_and_store_sentiment_as_pickle(parse_data(json_data))
     # calculate_and_store_as_pickle(json_data)
 
     X_csr_train, Y_csr_train, X_np_train, Y_np_train = construct_data(json_data)
+
+    # Get misclassified data
+    kf = KFold(n_splits=5)
+    kf.get_n_splits(X_np_train)
+    for train_index, test_index in kf.split(X_np_train):
+        print("TRAIN:", train_index, "TEST:", test_index)
+        X_train, X_test = X_np_train[train_index], X_np_train[test_index]
+        y_train, y_test = Y_np_train[train_index], Y_np_train[test_index]
+        rf = rf_classifier()
+        rf.fit(X_train, y_train)
+        pred = rf_predict(rf, X_test)
+        misclassified = get_misclassified(pred, y_test)
+        pass
+    pass
+
+
     # chaining_svm(X_np_train, Y_np_train)
 
     # Feature importance analysis.

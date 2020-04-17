@@ -1,4 +1,9 @@
 def get_accuracy(testY, predY):
+    accuracies = get_accuracies(testY, predY)
+    return sum(accuracies)/len(accuracies)
+
+
+def get_accuracies(testY, predY):
     accuracies = []
     for label_index, singleY in enumerate(testY):
         correct = 0
@@ -9,9 +14,9 @@ def get_accuracy(testY, predY):
 
             if value == True or predY[label_index][i] == True:
                 union = union + 1
-        accuracies.append(correct/union)
+        accuracies.append(correct / union.__float__())
 
-    return sum(accuracies)/len(accuracies)
+    return accuracies
 
 
 def get_f1(testY, predY):
