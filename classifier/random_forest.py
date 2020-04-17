@@ -1,4 +1,4 @@
-from pandas import np
+import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import make_scorer
 from sklearn.model_selection import GridSearchCV, cross_validate
